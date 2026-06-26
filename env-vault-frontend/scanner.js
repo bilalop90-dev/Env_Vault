@@ -257,6 +257,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const errorBanner = $('errorBanner');
   const errorText = $('errorText');
 
+  // Safety reset: ensure the error banner is hidden on load regardless of
+  // initial HTML/CSS state, before any other flow runs.
+  hideError();
+
   // ── Theme ──────────────────────────────────────────────────────────────────
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
@@ -304,12 +308,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   // ── Error banner ─────────────────────────────────────────────────────────────
+  // Note: `.error-banner` is styled `display: flex`, which overrides the `hidden`
+  // attribute on its own, so we also toggle the inline display to truly hide it.
   function showError(message) {
     errorText.textContent = message;
     errorBanner.hidden = false;
+    errorBanner.style.display = 'flex';
   }
   function hideError() {
     errorBanner.hidden = true;
+    errorBanner.style.display = 'none';
     errorText.textContent = '';
   }
 
