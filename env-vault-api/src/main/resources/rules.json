@@ -1,1 +1,122 @@
-[]
+[
+  {
+    "id": "aws-access-key",
+    "name": "AWS Access Key ID",
+    "pattern": "\\bAKIA[0-9A-Z]{16}\\b",
+    "riskLevel": "CRITICAL",
+    "description": "Identifies an AWS IAM account and, paired with its secret, grants programmatic access to your AWS resources.",
+    "remediation": "Revoke the key in the AWS IAM console and load credentials at runtime via IAM roles or AWS Secrets Manager instead of .env."
+  },
+  {
+    "id": "aws-secret-key",
+    "name": "AWS Secret Access Key",
+    "pattern": "(?<![A-Za-z0-9])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9])",
+    "riskLevel": "CRITICAL",
+    "description": "The private half of an AWS credential pair that signs API requests and can fully control your AWS account.",
+    "remediation": "Rotate the secret immediately in AWS IAM and store it in AWS Secrets Manager or an IAM role, never in a committed file."
+  },
+  {
+    "id": "stripe-live-secret",
+    "name": "Stripe Live Secret Key",
+    "pattern": "sk_live_[0-9a-zA-Z]{16,}",
+    "riskLevel": "CRITICAL",
+    "description": "A live Stripe secret key that can create charges, issue refunds, and read customer payment data on your production account.",
+    "remediation": "Roll the key in the Stripe Dashboard (Developers > API keys) and inject it through your host's secret manager at runtime."
+  },
+  {
+    "id": "stripe-live-publishable",
+    "name": "Stripe Live Publishable Key",
+    "pattern": "pk_live_[0-9a-zA-Z]{16,}",
+    "riskLevel": "HIGH",
+    "description": "A live Stripe publishable key used in client code; while less sensitive, it confirms your live account and aids targeted abuse.",
+    "remediation": "Keep publishable keys in frontend config only and confirm no secret key sits beside it in this file."
+  },
+  {
+    "id": "stripe-test-secret",
+    "name": "Stripe Test Secret Key",
+    "pattern": "sk_test_[0-9a-zA-Z]{16,}",
+    "riskLevel": "MEDIUM",
+    "description": "A Stripe test-mode secret key that only touches sandbox data but still should not be shared publicly.",
+    "remediation": "Move it to a local-only .env that is git-ignored, and rotate it from the Stripe Dashboard if it was ever committed."
+  },
+  {
+    "id": "github-token",
+    "name": "GitHub Personal Access Token",
+    "pattern": "(ghp_[0-9a-zA-Z]{36}|github_pat_[0-9a-zA-Z_]{22,})",
+    "riskLevel": "CRITICAL",
+    "description": "A GitHub token that can read or push to your repositories and act on your behalf across the GitHub API.",
+    "remediation": "Revoke it under GitHub Settings > Developer settings > Personal access tokens and supply it via CI/CD encrypted secrets."
+  },
+  {
+    "id": "sendgrid-key",
+    "name": "SendGrid API Key",
+    "pattern": "SG\\.[A-Za-z0-9_-]{16,32}\\.[A-Za-z0-9_-]{16,64}",
+    "riskLevel": "HIGH",
+    "description": "A SendGrid API key that can send email as your domain and read mail activity, enabling spam or phishing from your account.",
+    "remediation": "Delete the key in the SendGrid dashboard (Settings > API Keys) and store the replacement in your platform's secret store."
+  },
+  {
+    "id": "jwt-secret",
+    "name": "JWT Secret",
+    "pattern": "(JWT_SECRET|TOKEN_SECRET)\\s*=\\s*\\S{20,}",
+    "riskLevel": "HIGH",
+    "description": "The signing secret for your JSON Web Tokens; anyone holding it can forge valid auth tokens for any user.",
+    "remediation": "Generate a new high-entropy secret, store it in a secret manager, and invalidate existing sessions after rotation."
+  },
+  {
+    "id": "database-url-with-password",
+    "name": "Database URL with embedded password",
+    "pattern": "(postgres(ql)?|mysql)://[^:@\\s]+:[^@\\s]+@",
+    "riskLevel": "CRITICAL",
+    "description": "A database connection string with an inline username and password granting direct read/write access to your data.",
+    "remediation": "Rotate the database password and pass the connection string through an environment secret at deploy time, not a committed file."
+  },
+  {
+    "id": "firebase-key",
+    "name": "Firebase API Key",
+    "pattern": "AIza[0-9A-Za-z_-]{35}",
+    "riskLevel": "HIGH",
+    "description": "A Google/Firebase API key that, without proper restrictions, can be abused to run up billing or access enabled APIs.",
+    "remediation": "Restrict the key by referrer/IP in the Google Cloud Console and regenerate it if it was exposed publicly."
+  },
+  {
+    "id": "twilio-auth",
+    "name": "Twilio Auth Token",
+    "pattern": "TWILIO[0-9A-Z_]*\\s*=\\s*[0-9a-fA-F]{32}",
+    "riskLevel": "HIGH",
+    "description": "A Twilio auth token that lets an attacker send SMS, place calls, and incur charges on your Twilio account.",
+    "remediation": "Rotate the token in the Twilio Console and reference it via a runtime secret rather than storing it in the repo."
+  },
+  {
+    "id": "openai-key",
+    "name": "OpenAI API Key",
+    "pattern": "sk-(proj-)?[A-Za-z0-9_-]{20,}",
+    "riskLevel": "CRITICAL",
+    "description": "An OpenAI API key that can spend against your account quota and access your organization's model usage.",
+    "remediation": "Revoke it on the OpenAI API keys page and inject the replacement through your deployment's secret manager."
+  },
+  {
+    "id": "google-oauth-secret",
+    "name": "Google OAuth Client Secret",
+    "pattern": "GOCSPX-[A-Za-z0-9_-]{20,}",
+    "riskLevel": "HIGH",
+    "description": "A Google OAuth client secret used to authenticate your app during the OAuth flow; exposure enables app impersonation.",
+    "remediation": "Reset the client secret in the Google Cloud Console (APIs & Services > Credentials) and keep it server-side only."
+  },
+  {
+    "id": "slack-token",
+    "name": "Slack Bot/App Token",
+    "pattern": "xox[bp]-[0-9A-Za-z-]{10,}",
+    "riskLevel": "HIGH",
+    "description": "A Slack bot or user token that can read messages and post into your workspace channels.",
+    "remediation": "Revoke the token in your Slack app's OAuth settings and load it from an environment secret at runtime."
+  },
+  {
+    "id": "generic-high-entropy",
+    "name": "Generic High Entropy Secret",
+    "pattern": "[A-Z0-9_]*(SECRET|KEY|TOKEN|PASSWORD)[A-Z0-9_]*\\s*=\\s*\\S{32,}",
+    "riskLevel": "HIGH",
+    "description": "A variable whose name signals a credential and whose value is long enough to be a real secret.",
+    "remediation": "Confirm whether this is a live secret; if so, rotate it and move it into a managed secret store outside version control."
+  }
+]
