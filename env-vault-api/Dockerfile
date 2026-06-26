@@ -1,0 +1,24 @@
+# ---- Build stage ----
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+
+# Cache dependencies first
+COPY .mvn/ .mvn/
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline -B || true
+
+# Build the application
+COPY src ./src
+RUN ./mvnw clean package -DskipTests -B
+
+# ---- Runtime stage ----
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
+# Render injects PORT; default to 8080 locally
+ENV PORT=8080
+EXPOSE 8080
+
+CMD ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
