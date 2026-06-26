@@ -1,3 +1,7 @@
 # Local planning / spec docs — not part of the deliverable
 ENV_VAULT_CHECKER.md
 files/
+
+# IDE
+.idea/
+.vscode/

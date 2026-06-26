@@ -1,16 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENV Vault Checker</title>
+
+    <!-- Google Fonts: Inter + JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main>
-        <h1>ENV Vault Checker</h1>
-        <p>Coming soon.</p>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </span>
+            <span class="brand-name">ENV Vault Checker</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+            <!-- icon injected by scanner.js based on active theme -->
+        </button>
+    </nav>
+
+    <!-- HERO / INPUT SECTION -->
+    <main class="container">
+        <section class="hero">
+            <h1>Audit your <span class="highlight">.env</span> file</h1>
+            <p class="hero-sub">Paste or upload your file. Every secret stays in your browser — nothing is sent to our server.</p>
+        </section>
+
+        <!-- ZERO TRUST NOTICE -->
+        <div class="trust-badge" id="trustBadge">
+            <span class="trust-icon" id="trustIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </span>
+            <span class="trust-text" id="trustText">Zero-trust mode — rules are fetching...</span>
+        </div>
+
+        <!-- INPUT AREA -->
+        <section class="input-section">
+            <div class="input-header">
+                <label for="envInput">Paste your .env content</label>
+                <div class="input-actions">
+                    <label class="btn btn-secondary" for="fileUpload">
+                        <span class="btn-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </span>
+                        Upload file
+                        <input type="file" id="fileUpload" accept=".env,text/plain" hidden>
+                    </label>
+                    <button class="btn btn-ghost" id="clearBtn" type="button">Clear</button>
+                </div>
+            </div>
+            <textarea
+                id="envInput"
+                class="env-textarea"
+                placeholder="DATABASE_URL=postgresql://user:password@host/db&#10;STRIPE_SECRET_KEY=sk_live_...&#10;PORT=3000"
+                rows="10"
+                spellcheck="false"
+                autocomplete="off"
+            ></textarea>
+            <button class="btn btn-primary btn-scan" id="scanBtn" type="button">
+                <span class="btn-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </span>
+                <span class="btn-label">Scan for secrets</span>
+            </button>
+        </section>
+
+        <!-- RESULTS SECTION (hidden by default) -->
+        <section class="results-section" id="resultsSection" hidden>
+
+            <!-- SUMMARY BAR -->
+            <div class="summary-bar">
+                <div class="summary-card summary-total">
+                    <span class="summary-count" id="summaryTotal">0</span>
+                    <span class="summary-label">Total Scanned</span>
+                </div>
+                <div class="summary-card summary-critical">
+                    <span class="summary-count" id="summaryCritical">0</span>
+                    <span class="summary-label">Critical</span>
+                </div>
+                <div class="summary-card summary-high">
+                    <span class="summary-count" id="summaryHigh">0</span>
+                    <span class="summary-label">High</span>
+                </div>
+                <div class="summary-card summary-medium">
+                    <span class="summary-count" id="summaryMedium">0</span>
+                    <span class="summary-label">Medium</span>
+                </div>
+                <div class="summary-card summary-safe">
+                    <span class="summary-count" id="summarySafe">0</span>
+                    <span class="summary-label">Safe</span>
+                </div>
+            </div>
+
+            <!-- FLAGGED VARIABLES LIST -->
+            <div class="results-header">
+                <h2>Findings</h2>
+                <span class="results-sub" id="resultsMeta"></span>
+            </div>
+            <div class="results-list" id="resultsList"></div>
+
+            <!-- SAFE VARIABLES COLLAPSIBLE -->
+            <details class="safe-section" id="safeSection">
+                <summary>
+                    <span class="safe-title">
+                        <span class="safe-title-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </span>
+                        Safe variables
+                    </span>
+                    <span class="safe-right">
+                        <span class="safe-count" id="safeCount">0 variables with no secrets detected</span>
+                        <span class="safe-chevron" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </span>
+                    </span>
+                </summary>
+                <div class="safe-list" id="safeList"></div>
+            </details>
+
+        </section>
+
+        <!-- ERROR STATE (hidden by default) -->
+        <div class="error-banner" id="errorBanner" hidden>
+            <span class="error-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </span>
+            <span class="error-text" id="errorText"></span>
+        </div>
+
     </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>Your secrets never leave your browser. <a href="#" class="footer-link">How this works
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="footer-arrow" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a></p>
+    </footer>
+
     <script src="scanner.js"></script>
 </body>
 </html>
