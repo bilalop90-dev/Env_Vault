@@ -1,5 +1,5 @@
 # ---- Build stage ----
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
 # Cache dependencies first
@@ -12,7 +12,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests -B
 
 # ---- Runtime stage ----
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
