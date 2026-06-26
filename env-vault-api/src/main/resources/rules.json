@@ -50,7 +50,7 @@
   {
     "id": "sendgrid-key",
     "name": "SendGrid API Key",
-    "pattern": "SG\\.[A-Za-z0-9_-]{16,32}\\.[A-Za-z0-9_-]{16,64}",
+    "pattern": "SG\\.[A-Za-z0-9_-]{16,}",
     "riskLevel": "HIGH",
     "description": "A SendGrid API key that can send email as your domain and read mail activity, enabling spam or phishing from your account.",
     "remediation": "Delete the key in the SendGrid dashboard (Settings > API Keys) and store the replacement in your platform's secret store."
