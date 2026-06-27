@@ -10,7 +10,7 @@
   {
     "id": "aws-secret-key",
     "name": "AWS Secret Access Key",
-    "pattern": "(?<![A-Za-z0-9])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9])",
+    "pattern": "(AWS|SECRET)[A-Za-z0-9_]*\\s*=\\s*[\"']?[A-Za-z0-9/+=]{40}(?![A-Za-z0-9])",
     "riskLevel": "CRITICAL",
     "description": "The private half of an AWS credential pair that signs API requests and can fully control your AWS account.",
     "remediation": "Rotate the secret immediately in AWS IAM and store it in AWS Secrets Manager or an IAM role, never in a committed file."
