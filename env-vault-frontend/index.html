@@ -74,6 +74,7 @@
                 spellcheck="false"
                 autocomplete="off"
             ></textarea>
+            <p class="input-error" id="inputError" hidden></p>
             <button class="btn btn-primary btn-scan" id="scanBtn" type="button">
                 <span class="btn-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,6 +88,8 @@
 
         <!-- RESULTS SECTION (hidden by default) -->
         <section class="results-section" id="resultsSection" hidden>
+
+          <div class="results-body" id="resultsBody">
 
             <!-- SUMMARY BAR -->
             <div class="summary-bar">
@@ -154,6 +157,14 @@
                 </summary>
                 <div class="safe-list" id="safeList"></div>
             </details>
+
+          </div><!-- /results-body -->
+
+            <!-- ZERO-RESULTS EMPTY STATE -->
+            <div class="empty-state" id="emptyState" hidden>
+                <span class="empty-icon" aria-hidden="true">🎉</span>
+                <p>No variables found to scan. Make sure your file follows the KEY=VALUE format.</p>
+            </div>
 
         </section>
 

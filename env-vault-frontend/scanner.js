@@ -321,9 +321,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const scanBtn = $('scanBtn');
   const scanBtnLabel = scanBtn.querySelector('.btn-label');
   const resultsSection = $('resultsSection');
+  const resultsBody = $('resultsBody');
+  const emptyState = $('emptyState');
   const resultsList = $('resultsList');
   const resultsMeta = $('resultsMeta');
   const exportBtn = $('exportBtn');
+  const inputError = $('inputError');
   const safeList = $('safeList');
   const safeCount = $('safeCount');
   const errorBanner = $('errorBanner');
@@ -391,6 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(() => {
       setTrustBadgeState('error', 'Could not load rules — scan may use cached data');
+      // Surface a hover hint on the scan button; it stays clickable, but the scan
+      // will fail with a clear message in the error banner if no cache exists.
+      scanBtn.title = 'Rules could not be loaded — please refresh the page';
     });
 
   // ── Error banner ─────────────────────────────────────────────────────────────
@@ -413,9 +419,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Scanning state ───────────────────────────────────────────────────────────
+  // Disable both the button and the textarea so the content cannot change mid-scan.
   function setScanningState(isScanning) {
     scanBtn.disabled = isScanning;
+    envInput.disabled = isScanning;
     scanBtnLabel.textContent = isScanning ? 'Scanning...' : 'Scan for secrets';
+  }
+
+  // ── Inline input validation (below the textarea, not the main error banner) ──
+  function showInputError(message) {
+    inputError.textContent = message;
+    inputError.hidden = false;
+  }
+  function hideInputError() {
+    inputError.hidden = true;
+    inputError.textContent = '';
   }
 
   // ── Card builders (all user text via textContent / createElement) ────────────
@@ -523,6 +541,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderResults(results) {
     lastResults = results; // enable Export Report
 
+    // 0. zero-results state: no KEY=VALUE lines were parsed at all
+    if (results.totalScanned === 0) {
+      resultsBody.hidden = true;
+      emptyState.hidden = false;
+      resultsSection.hidden = false;
+      resultsSection.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    resultsBody.hidden = false;
+    emptyState.hidden = true;
+
     // 1. summary counts
     $('summaryTotal').textContent = results.totalScanned;
     $('summaryCritical').textContent = results.critical.length;
@@ -553,6 +582,9 @@ document.addEventListener('DOMContentLoaded', () => {
     resultsSection.scrollIntoView({ behavior: 'smooth' });
   }
 
+  // ── Clear inline validation as soon as the user edits the input ───────────────
+  envInput.addEventListener('input', hideInputError);
+
   // ── File upload ──────────────────────────────────────────────────────────────
   fileUpload.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -560,6 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       envInput.value = ev.target.result;
+      hideInputError();
     };
     reader.readAsText(file);
     // allow re-uploading the same file name again
@@ -578,6 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastResults = null;
     hideResults();
     hideError();
+    hideInputError();
     setScanningState(false);
     envInput.focus();
   });
@@ -586,10 +620,12 @@ document.addEventListener('DOMContentLoaded', () => {
   scanBtn.addEventListener('click', async () => {
     const rawText = envInput.value.trim();
     if (!rawText) {
-      showError('Please paste or upload a .env file first.');
+      // Inline validation below the textarea — not the main error banner.
+      showInputError('Please paste or upload a .env file first.');
       return;
     }
 
+    hideInputError();
     setScanningState(true);
     hideError();
     hideResults();

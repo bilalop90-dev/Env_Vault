@@ -309,6 +309,12 @@ a:hover {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 25%, transparent);
 }
 
+.input-error {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--risk-critical-text);
+}
+
 /* ─── BUTTONS ────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -676,6 +682,26 @@ a:hover {
 .safe-row-line {
   color: var(--text-muted);
   flex-shrink: 0;
+}
+
+/* ─── EMPTY STATE ────────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.empty-icon {
+  display: block;
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
 }
 
 /* ─── ERROR BANNER ───────────────────────────────────────────────────────── */
