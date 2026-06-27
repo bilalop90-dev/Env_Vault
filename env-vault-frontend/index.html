@@ -114,7 +114,19 @@
 
             <!-- FLAGGED VARIABLES LIST -->
             <div class="results-header">
-                <h2>Findings</h2>
+                <div class="results-header-left">
+                    <h2>Findings</h2>
+                    <button class="btn btn-secondary export-btn" id="exportBtn" type="button">
+                        <span class="btn-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </span>
+                        Export Report
+                    </button>
+                </div>
                 <span class="results-sub" id="resultsMeta"></span>
             </div>
             <div class="results-list" id="resultsList"></div>

@@ -425,6 +425,12 @@ a:hover {
   gap: 8px;
 }
 
+.results-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .results-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
