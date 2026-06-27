@@ -1,0 +1,3 @@
+# Ensure the Maven wrapper script keeps LF endings so it runs in Linux/alpine containers
+env-vault-api/mvnw text eol=lf
+mvnw text eol=lf
