@@ -82,6 +82,12 @@
   padding: 0;
 }
 
+/* The `hidden` attribute must win over component display rules (e.g. the error
+   banner's `display: flex`), so toggling `hidden` alone truly hides an element. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
