@@ -390,13 +390,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const remIcon = el('span', 'remediation-icon');
     remIcon.innerHTML = ICONS.bulb; // static markup
     rem.appendChild(remIcon);
-    const remText = el('span');
+    const remText = el('span', 'remediation-text');
     remText.appendChild(el('strong', null, 'Remediation: '));
     remText.appendChild(document.createTextNode(entry.matchedRule.remediation));
     rem.appendChild(remText);
+    rem.appendChild(buildCopyButton(entry.matchedRule.remediation));
     card.appendChild(rem);
 
     return card;
+  }
+
+  // Copy-to-clipboard button for a remediation. Built with createElement (never
+  // innerHTML) since it sits next to user-adjacent data.
+  function buildCopyButton(remediationText) {
+    const btn = el('button', 'copy-fix-btn', 'Copy fix steps');
+    btn.type = 'button';
+    const defaultLabel = 'Copy fix steps';
+
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(remediationText);
+        flash('✓ Copied');
+      } catch (_) {
+        flash('✗ Failed');
+      }
+    });
+
+    function flash(label) {
+      btn.textContent = label;
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = defaultLabel;
+        btn.disabled = false;
+      }, 2000);
+    }
+
+    return btn;
   }
 
   function buildSafeRow(item) {

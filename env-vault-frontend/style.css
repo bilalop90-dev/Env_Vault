@@ -544,6 +544,38 @@ a:hover {
   color: var(--accent-blue);
 }
 
+.remediation-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.copy-fix-btn {
+  flex-shrink: 0;
+  align-self: flex-start;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.copy-fix-btn:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.copy-fix-btn:disabled {
+  cursor: default;
+  color: var(--risk-safe-text);
+  border-color: var(--risk-safe-border);
+}
+
 /* ─── SAFE SECTION ───────────────────────────────────────────────────────── */
 .safe-section {
   margin-top: 24px;
