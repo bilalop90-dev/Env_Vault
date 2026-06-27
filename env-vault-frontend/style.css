@@ -749,33 +749,69 @@ a:hover {
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+/* Mobile pass — target: fully usable at 375px (iPhone SE). */
 @media (max-width: 600px) {
   .container {
     padding: 80px 16px 40px;
   }
 
   .hero h1 {
-    font-size: 1.7rem;
+    font-size: 1.6rem;
   }
 
+  /* Brand name truncates gracefully rather than disappearing. */
   .brand-name {
-    display: none;
+    max-width: 60vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
+  /* Summary: 2 columns with Total spanning a full row at the top. */
   .summary-bar {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* full-width total card across the top */
   .summary-total {
     grid-column: 1 / -1;
   }
 
-  .card-header {
-    flex-direction: column;
+  .summary-count {
+    font-size: 1.6rem;
   }
 
-  .card-meta {
-    align-self: flex-start;
+  /* Result cards: keep the risk badge on the same line as the variable name,
+     but let the key and value wrap so nothing overflows. */
+  .card-header {
+    flex-direction: row;
+  }
+
+  .var-key {
+    font-size: 0.85rem;
+    min-width: 0;
+  }
+
+  .var-value,
+  .matched-pattern {
+    word-break: break-all;
+  }
+
+  .rule-description {
+    font-size: 0.8rem;
+  }
+
+  /* Comfortable touch targets. */
+  .btn-scan {
+    min-height: 48px;
+  }
+
+  .export-btn,
+  .copy-fix-btn {
+    min-height: 44px;
+  }
+
+  /* Let the remediation copy button drop below the text on narrow screens. */
+  .remediation-box {
+    flex-wrap: wrap;
   }
 }
