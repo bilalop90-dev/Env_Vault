@@ -92,7 +92,8 @@ function parseEnvFile(rawText) {
     const eq = trimmed.indexOf('=');
     if (eq === -1) continue;               // not a KEY=VALUE line → null → skip
 
-    const key = trimmed.slice(0, eq).trim();
+    // Strip a leading `export ` so `export KEY=VALUE` reports as KEY, not "export KEY".
+    const key = trimmed.slice(0, eq).trim().replace(/^export\s+/i, '');
     const value = trimmed.slice(eq + 1).trim();
 
     if (key === '') continue;              // '=value' with no key is meaningless
