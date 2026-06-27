@@ -180,11 +180,74 @@
             <span class="error-text" id="errorText"></span>
         </div>
 
+        <!-- HOW THIS WORKS -->
+        <details class="how-section" id="how-it-works">
+            <summary>
+                <span class="how-title">
+                    <span class="how-title-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </span>
+                    How this works
+                </span>
+                <span class="how-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </span>
+            </summary>
+
+            <ol class="how-steps">
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </span>
+                    <p>On page load, we fetch a list of detection rules from our server. This is the only request we ever make — and it contains no personal data.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <p>When you paste or upload your .env file, it stays entirely in your browser. We use JavaScript's FileReader API to read it locally.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </span>
+                    <p>We run each variable against our detection rules using JavaScript regex matching. This happens on your machine, in your browser tab, with no network call.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </span>
+                    <p>The results are rendered directly in the page. Nothing is stored, logged, or transmitted.</p>
+                </li>
+            </ol>
+
+            <p class="how-verify">You can verify this yourself: open DevTools → Network tab → paste your file and scan. You will see zero outbound requests after the initial rules fetch.</p>
+        </details>
+
     </main>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <p>Your secrets never leave your browser. <a href="#" class="footer-link">How this works
+        <p>Your secrets never leave your browser. <a href="#how-it-works" class="footer-link">How this works
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="footer-arrow" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>

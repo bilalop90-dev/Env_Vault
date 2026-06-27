@@ -729,6 +729,92 @@ a:hover {
   color: var(--text-primary);
 }
 
+/* ─── HOW THIS WORKS ─────────────────────────────────────────────────────── */
+.how-section {
+  margin-top: 48px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.how-section summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.how-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.how-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.how-title-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: var(--accent-blue);
+}
+
+.how-chevron {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.how-section[open] .how-chevron {
+  transform: rotate(90deg);
+}
+
+.how-steps {
+  list-style: none;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.how-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.how-step-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: var(--accent-blue);
+}
+
+.how-step p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.how-verify {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
 /* ─── FOOTER ─────────────────────────────────────────────────────────────── */
 .footer {
   text-align: center;
