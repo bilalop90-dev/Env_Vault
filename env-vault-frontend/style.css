@@ -213,8 +213,13 @@ a:hover {
   border-left-color: var(--text-muted);
 }
 
-.trust-badge.is-ready {
+.trust-badge.is-ready,
+.trust-badge.is-done {
   border-left-color: var(--risk-safe-border);
+}
+
+.trust-badge.is-scanning {
+  border-left-color: var(--accent-blue);
 }
 
 .trust-badge.is-error {
@@ -229,8 +234,13 @@ a:hover {
   color: var(--text-secondary);
 }
 
-.trust-badge.is-ready .trust-icon {
+.trust-badge.is-ready .trust-icon,
+.trust-badge.is-done .trust-icon {
   color: var(--risk-safe-text);
+}
+
+.trust-badge.is-scanning .trust-icon {
+  color: var(--accent-blue);
 }
 
 .trust-badge.is-error .trust-icon {

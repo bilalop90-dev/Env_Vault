@@ -222,6 +222,10 @@ const ICONS = {
     '<line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>' +
     '<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>',
   loader: SVG_OPEN + '<path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>',
+  search:
+    SVG_OPEN +
+    '<circle cx="11" cy="11" r="8"></circle>' +
+    '<line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
   shieldCheck:
     SVG_OPEN +
     '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
@@ -279,33 +283,44 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(currentTheme);
   });
 
-  // ── Trust badge state ────────────────────────────────────────────────────────
-  function setTrust(state, message) {
-    trustBadge.classList.remove('is-loading', 'is-ready', 'is-error');
-    trustIcon.classList.remove('is-spinning');
+  // ── Trust badge state machine ─────────────────────────────────────────────────
+  // Reusable: takes one of loading | ready | scanning | done | error and applies
+  // the matching left-border colour class + icon, then sets the message text.
+  const TRUST_STATES = {
+    loading:  { cls: 'is-loading',  icon: ICONS.loader,        spin: true },
+    ready:    { cls: 'is-ready',    icon: ICONS.shieldCheck,   spin: false },
+    scanning: { cls: 'is-scanning', icon: ICONS.search,        spin: false },
+    done:     { cls: 'is-done',     icon: ICONS.shieldCheck,   spin: false },
+    error:    { cls: 'is-error',    icon: ICONS.alertTriangle, spin: false },
+  };
 
-    if (state === 'loading') {
-      trustBadge.classList.add('is-loading');
-      trustIcon.innerHTML = ICONS.loader;
-      trustIcon.classList.add('is-spinning');
-    } else if (state === 'ready') {
-      trustBadge.classList.add('is-ready');
-      trustIcon.innerHTML = ICONS.shieldCheck;
-    } else {
-      trustBadge.classList.add('is-error');
-      trustIcon.innerHTML = ICONS.alertTriangle;
-    }
+  function setTrustBadgeState(state, message) {
+    const cfg = TRUST_STATES[state] || TRUST_STATES.error;
+    trustBadge.classList.remove(
+      'is-loading', 'is-ready', 'is-scanning', 'is-done', 'is-error'
+    );
+    trustBadge.classList.add(cfg.cls);
+    trustIcon.innerHTML = cfg.icon;
+    trustIcon.classList.toggle('is-spinning', cfg.spin);
     trustText.textContent = message;
   }
 
+  // Remembers how many rules loaded so the "scan complete" / "scanning" messages
+  // can reference the right counts.
+  let loadedRuleCount = 0;
+
   // ── Rules prefetch (warms the cache, surfaces zero-trust status) ─────────────
-  setTrust('loading', 'Loading detection rules...');
+  setTrustBadgeState('loading', 'Loading detection rules...');
   getRules()
     .then((rules) => {
-      setTrust('ready', `${rules.length} rules loaded — your file stays in this browser`);
+      loadedRuleCount = rules.length;
+      setTrustBadgeState(
+        'ready',
+        `${rules.length} rules loaded — your file stays in this browser`
+      );
     })
     .catch(() => {
-      setTrust('error', 'Could not load rules — scan may use cached data');
+      setTrustBadgeState('error', 'Could not load rules — scan may use cached data');
     });
 
   // ── Error banner ─────────────────────────────────────────────────────────────
@@ -471,11 +486,19 @@ document.addEventListener('DOMContentLoaded', () => {
     hideError();
     hideResults();
 
+    const varCount = parseEnvFile(rawText).length;
+    setTrustBadgeState('scanning', `Scanning ${varCount} variables locally...`);
+
     try {
       const results = await scanEnv(rawText);
       renderResults(results);
+      setTrustBadgeState('done', 'Scan complete — no data was sent to any server');
     } catch (err) {
       showError(err.message);
+      setTrustBadgeState(
+        'ready',
+        `${loadedRuleCount} rules loaded — your file stays in this browser`
+      );
     } finally {
       setScanningState(false);
     }
