@@ -18,15 +18,25 @@ public class CorsConfig implements WebMvcConfigurer {
     @Value("${CORS_ALLOWED_ORIGIN:https://placeholder.github.io}")
     private String productionOrigin;
 
+    /**
+     * Local development origins. These are only needed when running the frontend
+     * from a local static server — remove or disable them once the site is live.
+     */
+    private static final String[] LOCAL_DEV_ORIGINS = {
+            "http://localhost:5500",
+            "http://127.0.0.1:5500",
+            "http://localhost:3000"
+    };
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // Production origin (from CORS_ALLOWED_ORIGIN) plus the local-dev origins above.
+        String[] allowedOrigins = new String[LOCAL_DEV_ORIGINS.length + 1];
+        allowedOrigins[0] = productionOrigin;
+        System.arraycopy(LOCAL_DEV_ORIGINS, 0, allowedOrigins, 1, LOCAL_DEV_ORIGINS.length);
+
         registry.addMapping("/api/**")
-                .allowedOrigins(
-                        "http://localhost:5500",
-                        "http://127.0.0.1:5500",
-                        "http://localhost:3000",
-                        productionOrigin
-                )
+                .allowedOrigins(allowedOrigins)
                 .allowedMethods("GET", "OPTIONS")
                 .allowedHeaders("*")
                 .maxAge(3600);
