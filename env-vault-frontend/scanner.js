@@ -6,7 +6,7 @@
  */
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const API_BASE_URL = 'http://localhost:8080'; // Will be updated to Render URL in Phase 6
+const API_BASE_URL = 'http://localhost:8080'; // TODO: update to Render URL before Phase 6 deploy
 const RULES_CACHE_KEY = 'envvault_rules_cache';
 const RULES_CACHE_TTL = 86400000; // 24 hours in ms
 
@@ -258,18 +258,6 @@ function downloadReport(text) {
   a.click();
   URL.revokeObjectURL(url); // clean up memory
 }
-
-// ─── DEV ONLY — console test hook (disabled in Phase 4) ──────────────────────
-// The UI below fully drives the scanner, so the console hook is no longer needed.
-// Kept commented for quick manual debugging during development.
-//
-// window.__envVaultTest = async (sampleText) => {
-//   const result = await scanEnv(sampleText);
-//   console.table(result.critical);
-//   console.table(result.high);
-//   console.table(result.safe);
-//   return result;
-// };
 
 // ─── ICONS ───────────────────────────────────────────────────────────────────
 // Static, inline SVG markup. These strings are constant (never user input), so
