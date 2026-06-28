@@ -16,7 +16,7 @@ RUN ./mvnw clean package -DskipTests -B
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/env-vault-api-0.0.1-SNAPSHOT.jar app.jar
 
 # Render injects PORT; default to 8080 locally
 ENV PORT=8080
