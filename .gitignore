@@ -2,6 +2,27 @@
 ENV_VAULT_CHECKER.md
 files/
 
+# Maven build output
+target/
+*.jar.original
+
+# Compiled class files
+*.class
+
 # IDE
 .idea/
+*.iml
+*.ipr
+*.iws
 .vscode/
+
+# Node (future-proofing the frontend tooling)
+node_modules/
+
+# Local env / secrets — never commit these (ironic, but critical for a security tool)
+.env
+*.env
+
+# OS files
+.DS_Store
+Thumbs.db
