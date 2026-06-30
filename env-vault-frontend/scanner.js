@@ -6,7 +6,7 @@
  */
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const API_BASE_URL = 'http://localhost:8080'; // TODO: update to Render URL before Phase 6 deploy
+const API_BASE_URL = 'https://env-vault-8872.onrender.com'; 
 const RULES_CACHE_KEY = 'envvault_rules_cache';
 const RULES_CACHE_TTL = 86400000; // 24 hours in ms
 
