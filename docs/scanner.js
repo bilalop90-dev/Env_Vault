@@ -6,7 +6,7 @@
  */
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
-const API_BASE_URL = 'https://env-vault-8872.onrender.com';
+const API_BASE_URL = 'https://env-vault-8872.onrender.com'; 
 const RULES_CACHE_KEY = 'envvault_rules_cache';
 const RULES_CACHE_TTL = 86400000; // 24 hours in ms
 
